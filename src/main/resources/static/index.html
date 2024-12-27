@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Management</title>
+    <script>
+      async function fetchProducts() {
+        const response = await fetch("/api/products");
+        const products = await response.json();
+        const productList = document.getElementById("product-list");
+        productList.innerHTML = "";
+        products.forEach((product) => {
+          const li = document.createElement("li");
+          li.textContent = `Name: ${product.name}, Price: $${product.price}`;
+          productList.appendChild(li);
+        });
+      }
+
+      async function addProduct(event) {
+        event.preventDefault();
+        const name = document.getElementById("product-name").value;
+        const price = document.getElementById("product-price").value;
+
+        await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, price }),
+        });
+
+        fetchProducts();
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Product Management</h1>
+    <form onsubmit="addProduct(event)">
+      <input
+        type="text"
+        id="product-name"
+        placeholder="Product Name"
+        required
+      />
+      <input
+        type="number"
+        id="product-price"
+        placeholder="Product Price"
+        required
+      />
+      <button type="submit">Add Product</button>
+    </form>
+    <h2>Product List:</h2>
+    <ul id="product-list"></ul>
+    <script>
+      fetchProducts();
+    </script>
+  </body>
+</html>
